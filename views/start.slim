@@ -1,0 +1,14 @@
+h2 Vänligen logga in eller skapa konto!
+
+h3 Logga in
+form action="/users/login" method="post"
+    input type="text" name="username" placeholder="Username"
+    input type="text" name="password" placeholder="Password"
+    input type="submit" value="Logga in"
+
+h3 Skapa konto
+form action="/users/new" method="post"
+    input type="text" name="username" placeholder="Username"
+    input type="text" name="password" placeholder="Password"
+    input type="text" name="password_confirmation" placeholder="Confirm Password"
+    input type="submit" value="Skapa konto"

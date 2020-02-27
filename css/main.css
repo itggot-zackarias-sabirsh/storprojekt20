@@ -1,0 +1,9 @@
+body{
+    margin: 0;
+}
+
+.container{
+    width: 80vw;
+    height: 10vh;
+    background-color: lightblue;
+}

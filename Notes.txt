@@ -1,0 +1,14 @@
+MVC KOD:
+Model:
+model.rb, Kommunikation med databas, inga sessions, 
+
+SQL Inner Join:
+SELECT column_name(s)
+FROM table2
+INNER JOIN table2
+ON table.column_name = table2.column_name
+
+
+
+
+
