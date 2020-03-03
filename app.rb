@@ -6,7 +6,7 @@ require_relative './model.rb'
 
 enable :sessions
 
-db = connect_to_db()
+# db = connect_to_db()
 
 def set_error(error_message)
     session[:error] = error_message
@@ -50,12 +50,13 @@ post('/users/login') do
     
     if validation.any?
 
-        password_digest = db.execute("SELECT password_digest FROM users WHERE username = (?)", username).first['password_digest']
+        password_digest = password(username)
         p password_digest
 
         if BCrypt::Password.new(password_digest) == password
             user_id = login(username)
             p user_id
+            session[:user_id] = user_id
             redirect('/home')
         else
             set_error("Password is not correct")
@@ -67,12 +68,12 @@ post('/users/login') do
     end
 end
 
-get('/register_confirmation') do
+get('/users/register_confirmation') do
     slim(:register_confirmation)
 end
 
 get('/home') do
- slim(:home)
+ slim(:home, locals:{current_user_id: session[:user_id], current_username: get_username_by_id(session[:user_id])})
 end
 
 get ('/error') do
