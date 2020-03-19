@@ -2,6 +2,7 @@ require 'slim'
 require 'sinatra'
 require 'sqlite3'
 require 'BCrypt'
+require 'mime-types'
 require_relative './model.rb'
 
 enable :sessions
@@ -31,7 +32,10 @@ post('/users/new') do
             p password_digest
             result = new_user(username, password_digest)
             p result
-            redirect('/register_confirmation')
+            user_id = login(username)
+            p user_id
+            session[:user_id] = user_id
+            redirect('/home')
         else
             set_error("Passwords don't match")
             redirect('/error')
@@ -68,8 +72,30 @@ post('/users/login') do
     end
 end
 
+before do
+    puts MIME::Types.type_for('css')
+    session[:user_id] = 3
+    path = request.path_info
+    blacklist = ['/', '/users/login', '/users/new']
+    redirect = true
+
+    blacklist.each do |e|
+        if path == e
+            redirect = false
+        end
+    end
+
+    if session[:user_id].nil? and redirect
+        redirect('/')
+    end
+end
+
 get('/users/register_confirmation') do
     slim(:register_confirmation)
+end
+
+get('/post/create') do
+    slim(:"post/create")
 end
 
 get('/home') do
@@ -79,3 +105,4 @@ end
 get ('/error') do
     slim(:error)
 end
+

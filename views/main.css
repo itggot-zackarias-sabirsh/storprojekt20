@@ -1,0 +1,19 @@
+body{
+    margin: 0;
+    background-color: red;
+}
+
+header{
+    background-color: lightblue;
+}
+
+.container{
+    width: 80vw;
+    height: 10vh;
+    background-color: lightblue;
+}
+
+.type_area{
+    min-height: 200px;
+    min-width: 300px;
+}
