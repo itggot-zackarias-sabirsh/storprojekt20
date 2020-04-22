@@ -1,6 +1,21 @@
-h1 =current_username
+h1= "Logged in as: " + current_username
 
-<form method="get" action="/post/create">
-    <button type="submit">Create new Post</button>
+form action="/post/create" method="post"
+    input align="top" class="type_area" type="text" name="post_text" placeholder="Type text here..."
+    br
+    input class="tag-area" type="text" name="tag_name" placeholder="#tags #seperated #by #space"
+    br
+    input type="submit" value="Create new Post"
+
+
+<div class="post_wrapper">
+    - all_post_info.reverse_each do |id, values|
+        div.post_container
+            p = "ID: " + id[0].to_s
+            p = "Text: " + id[1].to_s
+            p = "User: " + get_username_by_id(id[2].to_i).to_s
+            - get_tags_by_post_id(id[0].to_i).each do |i|
+                print = i[1].to_s + " "    
+            
 
 

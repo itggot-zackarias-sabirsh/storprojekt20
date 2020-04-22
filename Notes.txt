@@ -11,4 +11,9 @@ ON table.column_name = table2.column_name
 
 
 
-
+emils tips:
+skapa taglista
+flytta bcrypt
+crud funktion
+restful routes
+    /post:id
