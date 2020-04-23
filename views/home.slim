@@ -1,21 +1,39 @@
 h1= "Logged in as: " + current_username
 
 form action="/post/create" method="post"
-    input align="top" class="type_area" type="text" name="post_text" placeholder="Type text here..."
+    input align="top" class="type-area" type="text" name="post_text" placeholder="Type text here..."
     br
     input class="tag-area" type="text" name="tag_name" placeholder="#tags #seperated #by #space"
     br
     input type="submit" value="Create new Post"
 
 
-<div class="post_wrapper">
+<div class="post-wrapper">
     - all_post_info.reverse_each do |id, values|
-        div.post_container
-            p = "ID: " + id[0].to_s
-            p = "Text: " + id[1].to_s
-            p = "User: " + get_username_by_id(id[2].to_i).to_s
-            - get_tags_by_post_id(id[0].to_i).each do |i|
-                print = i[1].to_s + " "    
-            
+        div.post-container
+            div.id-container
+                p = "ID: " + id[0].to_s
+            div.user-container
+                p = "Posted by " + get_username_by_id(id[2].to_i).to_s
+            div.text-container   
+                p = id[1].to_s
+            div.tag-container
+                - get_tags_by_post_id(id[0].to_i).each do |i|
+                    p = i[1].to_s + " " 
+            - if id[2].to_i == current_user_id
+                - update_post_id = id[0].to_i
+                form action="/post/update" method="post"
+                        input type="hidden" name="update_post_id" value="#{update_post_id}"
+                        input placeholder="Edit post here..." class="edit-field" type="text" name="update_text"
+                        br
+                        input class="update-input" type="submit" value="Edit post"
+            end
+            - if id[2].to_i == current_user_id || current_user_id == 3
+                - delete_post_id = id[0].to_i
+                form action="/post/delete" method="post"
+                    input type="hidden" name="delete_post_id" value="#{delete_post_id}"
+                    input class="delete-input" type="submit" value="Delete Post"
+            end   
+                
 
 

@@ -67,6 +67,21 @@ def new_post(post_text, post_user)
     result = db.execute("INSERT INTO posts (post_text, post_user) VALUES (?, ?)", [post_text, post_user])
 end
 
+def delete_post_by_id(delete_post_id)
+    result = db.execute("DELETE FROM posts WHERE post_id =(?)", delete_post_id)
+    return result
+end
+
+def delete_tags_by_id(delete_post_id)
+    result = db.execute("DELETE FROM post_tags_join WHERE post_id =(?)", delete_post_id)
+    return result
+end
+
+def update_post_by_id(update_post_id, update_text)
+    result = db.execute("UPDATE posts SET post_text = (?) WHERE post_id = (?)", [update_text, update_post_id])
+    return result
+end
+
 def get_post_id()
     result = db.execute("SELECT MAX(post_id) from posts").first['MAX(post_id)']
     return result

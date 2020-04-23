@@ -74,7 +74,7 @@ end
 
 before do
     MIME::Types.type_for('css')
-    # session[:user_id] = 3
+    # session[:user_id] = 4
     path = request.path_info
     blacklist = ['/', '/users/login', '/users/new']
     redirect = true
@@ -122,6 +122,25 @@ post('/post/create') do
     end
     
     
+    redirect('/home')
+end
+
+post("/post/delete") do
+    delete_post_id = params["delete_post_id"].to_i
+
+    delete_post_by_id(delete_post_id)
+    delete_tags_by_id(delete_post_id)
+
+    redirect('/home')
+end
+
+
+post("/post/update") do
+    update_post_id = params["update_post_id"].to_i
+    update_text = params["update_text"].to_s
+
+    update_post_by_id(update_post_id, update_text)
+
     redirect('/home')
 end
 

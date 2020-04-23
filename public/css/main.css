@@ -4,33 +4,78 @@ body{
     padding-top: 0;
 }
 
+
 header{
 }
 
+.wrapper{
+    width: 90vw;
+    display: block;
+    justify-content: center;
+    align-items: center;
+}
 .container{
-    width: 80vw;
+    width: 40vw;
     height: 10vh;
     background-color: lightblue;
 }
 
-.post_container{
-    width: 80vw;
+.post-container{
+    width: 40vw;
+    padding: 10px;
+    margin-top: 10px; 
     background-color: lightblue;
 }
 
 .tag-area{
-    width: 300px;
+    width: 40vw;
     background-color: lightblue;
 }
+.tag-container{
+    padding-top: 5px;
+    display: flex;
+}
 
+.tag-container p{
+    background-color: rgb(221, 221, 221);
+    display: flex;
+    margin-right: 10px;
+}
 
-.type_area{
+.type-area{
     padding-bottom: 100px;
-    width: 300px;
+    width: 40vw;
     background-color: lightblue; 
     word-break: normal;
 }
 
 p{
-    color: red;
+    margin: 0;
 }
+
+input{
+    padding: 10px;
+    margin-bottom: 5px;
+}
+
+.text-container{
+    background-color: #fff;
+
+    padding: 5px;
+}
+
+.delete-input{
+    margin-top: 10px;
+    color: red;
+    padding: 0;
+}
+
+.update-input{
+    margin-top: 0;
+    padding: 0;
+}
+
+.edit-field{
+    margin-top: 20px;
+}
+
