@@ -6,6 +6,12 @@ body{
 
 
 header{
+    display: flex;
+}
+
+header form{
+    margin: 5px;
+    margin-left: 0;
 }
 
 .wrapper{

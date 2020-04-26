@@ -9,7 +9,11 @@ html lang="en"
     body
 
     header
-        a href="/home" Twitter 2.0
+        form action="/home" method="get"
+            input type="submit" value="Home"
+        form action="/" method="get"
+            input type="submit" value="Log out"
+
     <div class="wrapper">
     ==yield
     </div>

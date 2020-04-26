@@ -14,6 +14,7 @@ def set_error(error_message)
 end
 
 get('/')  do
+    session[:user_id] = nil
     slim(:start)
 end 
 
@@ -23,8 +24,12 @@ post('/users/new') do
     password = params["password"]
     password_confirmation = params["password_confirmation"]
 
+    if username.empty? || password.empty?
+        set_error("Fields missing")
+        redirect('/error')
+    end
+    
     validation = username_validation(username)
-
     if validation.empty?
         if  password == password_confirmation
 
@@ -76,7 +81,7 @@ before do
     MIME::Types.type_for('css')
     # session[:user_id] = 4
     path = request.path_info
-    blacklist = ['/', '/users/login', '/users/new']
+    blacklist = ['/', '/users/login', '/users/new', '/error']
     redirect = true
 
     blacklist.each do |e|
@@ -84,7 +89,11 @@ before do
             redirect = false
         end
     end
-    
+
+    p path
+
+    # if path = "/error"
+    #     redirect("/error")
     if session[:user_id].nil? and redirect
         redirect('/')
     end
@@ -151,6 +160,7 @@ get('/home') do
 end
 
 get('/error') do
+    p "hej"
     slim(:error)
 end
 
