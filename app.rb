@@ -7,17 +7,41 @@ require_relative './model.rb'
 
 enable :sessions
 
+
 # db = connect_to_db()
 
-def set_error(error_message)
-    session[:error] = error_message
+before do
+    # session[:user_id] = 4
+    path = request.path_info
+    blacklist = ['/', '/users/login', '/users/new', '/error']
+    redirect = true
+    
+    blacklist.each do |e|
+        if path == e
+            redirect = false
+        end
+    end
+    
+    p path
+    
+    if session[:user_id].nil? and redirect
+        redirect('/')
+    end
+    
 end
 
+# Display Landing Page
+#
 get('/')  do
     session[:user_id] = nil
-    slim(:start)
+    slim(:index)
 end 
 
+# Attempts register and updates the session
+#
+# @param [String] username, The username
+# @param [String] password, The password
+#
 post('/users/new') do
 
     username = params["username"]
@@ -40,7 +64,7 @@ post('/users/new') do
             user_id = login(username)
             p user_id
             session[:user_id] = user_id
-            redirect('/home')
+            redirect('/blogs')
         else
             set_error("Passwords don't match")
             redirect('/error')
@@ -51,11 +75,25 @@ post('/users/new') do
     end
 end
 
+# Attempts login and updates the session
+#
+# @param [String] username, The username
+# @param [String] password, The password
+#
 post('/users/login') do
     username = params["username"]
     password = params["password"]
     
     validation = username_validation(username)
+
+    if session[:attempt].nil?
+        session[:attempt] = Time.now
+    elsif Time.now - session[:attempt] < 20 
+        session[:error] = "Cannot log in at this moment. Wait a minute and try again"
+        redirect('/error')
+    end 
+    # p Time.now - session[:attempt]
+    session[:attempt] = Time.now
     
     if validation.any?
 
@@ -66,7 +104,7 @@ post('/users/login') do
             user_id = login(username)
             p user_id
             session[:user_id] = user_id
-            redirect('/home')
+            redirect('/blogs')
         else
             set_error("Password is not correct")
             redirect('/error')
@@ -77,41 +115,18 @@ post('/users/login') do
     end
 end
 
-before do
-    MIME::Types.type_for('css')
-    # session[:user_id] = 4
-    path = request.path_info
-    blacklist = ['/', '/users/login', '/users/new', '/error']
-    redirect = true
-
-    blacklist.each do |e|
-        if path == e
-            redirect = false
-        end
-    end
-
-    p path
-
-    # if path = "/error"
-    #     redirect("/error")
-    if session[:user_id].nil? and redirect
-        redirect('/')
-    end
-
-    # all_post_id.each do |post_id|
-    #     post_tags = get_tags_by_post_id(post_id)
-    # end
-end
-
+# Displays register confirmation
+#
 get('/users/register_confirmation') do
     slim(:register_confirmation)
 end
 
-get('/create_post') do
-    slim(:"post/create")
-end
-
-post('/post/create') do
+# Creates a new article and redirects to '/blogs'
+#
+# @param [String] post_text, The text of the article
+# @param [String] tag_name, The name of tags in article
+#
+post('/blog/new') do
     post_text = params["post_text"]
     tag_name = params["tag_name"].split" "
     p tag_name
@@ -131,36 +146,60 @@ post('/post/create') do
     end
     
     
-    redirect('/home')
+    redirect('/blogs')
 end
 
-post("/post/delete") do
+# Deletes an existing article and redirects to '/blogs'
+#
+# @param [Integer] post_id, The ID of the article
+#
+post("/blog/delete") do
     delete_post_id = params["delete_post_id"].to_i
 
     delete_post_by_id(delete_post_id)
     delete_tags_by_id(delete_post_id)
 
-    redirect('/home')
+    redirect('/blogs')
 end
 
-
-post("/post/update") do
+# Updates an existing article and redirects to '/blogs'
+#
+# @param [Integer] post_id, The ID of the article
+# @param [String] post_text, The text of the article
+#
+post("/blog/update") do
     update_post_id = params["update_post_id"].to_i
     update_text = params["update_text"].to_s
 
     update_post_by_id(update_post_id, update_text)
 
-    redirect('/home')
+    redirect('/blogs')
 end
 
-get('/home') do
-    slim(:home, locals:{current_user_id: session[:user_id], 
+post("blog/:id") do
+    tag_name = params["tag_name"].to_s
+    post_id = get_post_id_from_tag_name(tag_name)
+
+end
+
+# Displays blogs page
+#
+get('/blogs') do
+    slim(:blogs, locals:{current_user_id: session[:user_id], 
         current_username: get_username_by_id(session[:user_id]), 
         all_post_info: get_all_post_info()})      
 end
 
+# Defines error
+# @param [String] error_message, Error message text
+#
+def set_error(error_message)
+    session[:error] = error_message
+end
+
+# Displays an error message
+#
 get('/error') do
-    p "hej"
     slim(:error)
 end
 
